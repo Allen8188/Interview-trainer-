@@ -1,0 +1,50 @@
+name: Release Windows Zip
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Assemble package
+        run: |
+          set -eux
+          ROOT="InterviewTrainer-Windows"
+          mkdir -p "$ROOT"
+
+          cp -r app "$ROOT"/
+          cp -r web "$ROOT"/
+          cp -r scripts "$ROOT"/
+          cp -r release/windows/. "$ROOT"/
+          find "$ROOT" -type d -name "__pycache__" -prune -exec rm -rf {} +
+          find "$ROOT" -type f -name "*.pyc" -delete
+
+          cp Dockerfile "$ROOT"/
+          cp docker-compose.yml "$ROOT"/
+          cp requirements.txt "$ROOT"/
+          cp requirements-whisper.txt "$ROOT"/
+          cp README.md "$ROOT"/
+          cp LAUNCH.md "$ROOT"/
+
+          zip -r "InterviewTrainer-Windows.zip" "$ROOT"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: InterviewTrainer-Windows
+          path: InterviewTrainer-Windows.zip
+
+      - name: Attach to release
+        if: ${{ github.event_name == 'release' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          files: InterviewTrainer-Windows.zip

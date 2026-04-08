@@ -1,0 +1,17 @@
+# Local runtime data (privacy)
+data/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+dist/
+
+# Local secrets / env
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interview Trainer</title>
+  <link rel="stylesheet" href="/web/style.css" />
+</head>
+<body>
+  <div class="bg-shape bg-a"></div>
+  <div class="bg-shape bg-b"></div>
+
+  <main class="container">
+    <header class="hero">
+      <h1>Interview Trainer</h1>
+      <p>面试官 + 培训机构模式，支持语音答题、追问拷打、轮次复盘。</p>
+    </header>
+
+    <section class="card" id="setup-card">
+      <h2>1. 初始化</h2>
+      <div class="grid">
+        <label>公司
+          <input id="company" value="字节跳动" />
+        </label>
+        <label>岗位
+          <input id="role" value="后端研发实习生（企业隐私与效率）" />
+        </label>
+        <label>模式
+          <select id="mode">
+            <option value="mixed" selected>混合模式</option>
+            <option value="backend">后端技术面</option>
+            <option value="system_design">系统设计面</option>
+            <option value="hr">HR/行为面</option>
+          </select>
+        </label>
+        <label>追问强度
+          <select id="pressure-level">
+            <option value="gentle">温和</option>
+            <option value="standard" selected>标准</option>
+            <option value="high">高压</option>
+          </select>
+        </label>
+        <label>面试官风格
+          <select id="interviewer-style">
+            <option value="professional" selected>专业</option>
+            <option value="friendly">亲和</option>
+            <option value="strict">严格</option>
+          </select>
+        </label>
+        <label>轮数
+          <input id="rounds" type="number" min="3" max="24" value="14" />
+        </label>
+        <label>目标时长(分钟)
+          <input id="target-minutes" type="number" min="15" max="90" value="35" />
+        </label>
+      </div>
+
+      <label>简历文本（可粘贴）
+        <textarea id="resume" rows="8" placeholder="粘贴简历文本，或使用下方上传docx/txt"></textarea>
+      </label>
+      <label>本次命名（可选，不填自动生成）
+        <input id="session-label" placeholder="例如：字节后端-高压第2轮" />
+      </label>
+      <div class="question-box">
+        <h3>隐私与模型向导</h3>
+        <div class="row">
+          <label><input id="llm-enabled" type="checkbox" /> 启用LLM增强（默认关闭）</label>
+          <label><input id="llm-send-raw" type="checkbox" /> 发送原文到LLM（默认关闭，建议脱敏）</label>
+        </div>
+        <div class="row">
+          <input id="llm-model" value="gpt-4o-mini" placeholder="模型名" />
+          <input id="llm-base-url" value="https://api.openai.com/v1" placeholder="Base URL" />
+          <select id="llm-mode">
+            <option value="assist_only" selected>仅补充（推荐）</option>
+            <option value="replace_reply">直接替换回复</option>
+          </select>
+          <input id="llm-api-key" type="password" placeholder="你的API Key（仅内存会话）" />
+        </div>
+      </div>
+
+      <div class="row">
+        <input id="resume-file" type="file" accept=".docx,.txt" />
+        <button id="upload-btn">上传并解析</button>
+      </div>
+
+      <div class="row">
+        <button id="create-btn" class="primary">创建面试会话</button>
+        <button id="materials-btn">抓取开源素材</button>
+      </div>
+      <div class="row">
+        <button id="history-load-btn">加载历史记录</button>
+        <select id="history-select"></select>
+        <button id="history-restore-btn">恢复所选记录</button>
+        <input id="history-rename" placeholder="新的会话名" />
+        <button id="history-rename-btn">重命名所选记录</button>
+        <button id="history-delete-btn">删除所选记录</button>
+        <button id="history-export-btn">导出所选记录</button>
+        <input id="history-import-file" type="file" accept=".json" />
+        <button id="history-import-btn">导入记录</button>
+      </div>
+
+      <div id="setup-log" class="log"></div>
+      <ul id="materials" class="materials"></ul>
+    </section>
+
+    <section class="card hidden" id="interview-card">
+      <h2>2. 模拟面试</h2>
+      <div id="chat-log" class="chat-log"></div>
+      <div class="question-box">
+        <h3>当前问题</h3>
+        <p id="question-text">-</p>
+      </div>
+
+      <label>你的回答
+        <textarea id="answer" rows="6" placeholder="可手动输入，或点击语音按钮"></textarea>
+      </label>
+
+      <div class="row">
+        <select id="stt-engine">
+          <option value="browser" selected>浏览器语音识别</option>
+          <option value="local_whisper">本地Whisper服务端</option>
+        </select>
+        <button id="voice-btn">开始语音识别</button>
+        <button id="record-btn">开始录音上传</button>
+        <button id="apply-llm-btn">更新本会话LLM设置</button>
+        <button id="submit-btn" class="primary">提交回答</button>
+        <button id="review-btn">结束并复盘</button>
+      </div>
+
+      <div id="live-feedback" class="log"></div>
+    </section>
+
+    <section class="card hidden" id="review-card">
+      <h2>3. 复盘报告</h2>
+      <pre id="summary"></pre>
+      <div id="weak-list"></div>
+      <div class="question-box">
+        <h3>系统设计答题框架</h3>
+        <ol id="sys-template"></ol>
+      </div>
+    </section>
+  </main>
+
+  <script src="/web/app.js"></script>
+</body>
+</html>

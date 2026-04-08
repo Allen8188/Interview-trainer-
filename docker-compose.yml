@@ -1,0 +1,13 @@
+services:
+  interview-trainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: interview-trainer
+    ports:
+      - "8000:8000"
+    environment:
+      - IT_DATA_DIR=/app/data
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
