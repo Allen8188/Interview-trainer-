@@ -74,6 +74,11 @@ jobs:
           pyinstaller --noconfirm --clean --onefile \
             --name InterviewTrainer \
             --add-data "web;web" \
+            --hidden-import app.main \
+            --hidden-import app.engine \
+            --hidden-import app.storage \
+            --hidden-import app.llm \
+            --hidden-import app.stt \
             run_desktop.py
 
       - name: Assemble portable package

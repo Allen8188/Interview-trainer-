@@ -7,6 +7,7 @@ import time
 import webbrowser
 
 import uvicorn
+from app.main import app as fastapi_app
 
 
 def _open_browser_later(url: str, delay_sec: float = 1.5) -> None:
@@ -40,7 +41,7 @@ def main() -> None:
     if os.environ.get("IT_OPEN_BROWSER", "1") == "1":
         _open_browser_later(url)
 
-    uvicorn.run("app.main:app", host=host, port=port, reload=False)
+    uvicorn.run(fastapi_app, host=host, port=port, reload=False)
 
 
 if __name__ == "__main__":
