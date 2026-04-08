@@ -43,6 +43,16 @@
 - 该包使用 Docker 运行，不要求本机安装 Python。
 - 首次使用只需要安装 Docker Desktop。
 
+### Windows 免 Docker 版本
+
+- 在 GitHub Releases 下载：`InterviewTrainer-Windows-Portable.zip`
+- 解压后双击：`Launch-Interview-Trainer-NoDocker.bat`
+- 停止时双击：`Stop-Interview-Trainer-NoDocker.bat`
+
+说明：
+- 该包不依赖 Docker。
+- Python 运行时已打包进 `InterviewTrainer.exe`。
+
 ### 启动前自动检查
 
 - `start.sh` / `start.bat` 会先检查：

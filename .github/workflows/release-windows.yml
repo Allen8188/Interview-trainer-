@@ -48,3 +48,54 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: InterviewTrainer-Windows.zip
+
+  build-windows-portable:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install build deps
+        shell: bash
+        run: |
+          set -eux
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pyinstaller
+
+      - name: Build executable
+        shell: bash
+        run: |
+          set -eux
+          pyinstaller --noconfirm --clean --onefile \
+            --name InterviewTrainer \
+            --add-data "web;web" \
+            run_desktop.py
+
+      - name: Assemble portable package
+        shell: bash
+        run: |
+          set -eux
+          ROOT="InterviewTrainer-Windows-Portable"
+          mkdir -p "$ROOT"
+          cp dist/InterviewTrainer.exe "$ROOT"/
+          cp release/windows-portable/Launch-Interview-Trainer-NoDocker.bat "$ROOT"/
+          cp release/windows-portable/Stop-Interview-Trainer-NoDocker.bat "$ROOT"/
+          cp release/windows-portable/README-WINDOWS-NODOCKER.txt "$ROOT"/
+          7z a InterviewTrainer-Windows-Portable.zip "$ROOT"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: InterviewTrainer-Windows-Portable
+          path: InterviewTrainer-Windows-Portable.zip
+
+      - name: Attach portable zip to release
+        if: ${{ github.event_name == 'release' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          files: InterviewTrainer-Windows-Portable.zip
