@@ -3,7 +3,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: interview-trainer
     ports:
       - "8000:8000"
     environment:
